@@ -962,6 +962,28 @@ const options: RenovateOptions[] = [
     env: false,
   },
   {
+    name: 'replacementName',
+    description:
+      'The name of the new dependency that replaces the old deprecated dependency.',
+    type: 'string',
+    stage: 'package',
+    parent: 'packageRules',
+    mergeable: true,
+    cli: false,
+    env: false,
+  },
+  {
+    name: 'replacementVersion',
+    description:
+      'The version of the new dependency that replaces the old deprecated dependency.',
+    type: 'string',
+    stage: 'package',
+    parent: 'packageRules',
+    mergeable: true,
+    cli: false,
+    env: false,
+  },
+  {
     name: 'matchUpdateTypes',
     description:
       'Update types to match against (major, minor, pin, etc). Valid only within `packageRules` object.',
@@ -1170,6 +1192,20 @@ const options: RenovateOptions[] = [
       branchTopic: '{{{depNameSanitized}}}-rollback',
       commitMessageAction: 'Roll back',
       semanticCommitType: 'fix',
+    },
+    cli: false,
+    mergeable: true,
+  },
+  {
+    name: 'replacement',
+    description: 'Configuration to apply when replacing a dependency.',
+    stage: 'package',
+    type: 'object',
+    default: {
+      branchTopic: '{{{depNameSanitized}}}-replacement',
+      commitMessageAction: 'Replace',
+      commitMessageExtra:
+        'with {{newName}} {{#if isMajor}}v{{{newMajor}}}{{else}}{{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}{{/if}}',
     },
     cli: false,
     mergeable: true,

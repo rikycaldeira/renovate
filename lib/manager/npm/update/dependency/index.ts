@@ -13,8 +13,14 @@ function replaceAsString(
   newValue: string
 ): string | null {
   // Update the file = this is what we want
-  // eslint-disable-next-line no-param-reassign
-  parsedContents[depType][depName] = newValue;
+  if (depName === oldVersion) {
+    delete Object.assign(parsedContents[depType], {
+      [newValue]: parsedContents[depType][oldVersion],
+    })[oldVersion];
+  } else {
+    // eslint-disable-next-line no-param-reassign
+    parsedContents[depType][depName] = newValue;
+  }
   // Look for the old version number
   const searchString = `"${oldVersion}"`;
   const newString = `"${newValue}"`;
@@ -85,6 +91,16 @@ export function updateDependency({
       oldVersion,
       newValue
     );
+    if (upgrade.newName) {
+      newFileContent = replaceAsString(
+        parsedContents,
+        newFileContent,
+        depType,
+        depName,
+        depName,
+        upgrade.newName
+      );
+    }
     // istanbul ignore if
     if (!newFileContent) {
       logger.debug(
@@ -121,6 +137,20 @@ export function updateDependency({
           parsedContents.resolutions[depKey],
           newValue
         );
+        if (upgrade.newName) {
+          if (depKey === `**/${depName}`) {
+            // eslint-disable-next-line no-param-reassign
+            upgrade.newName = `**/${upgrade.newName}`;
+          }
+          newFileContent = replaceAsString(
+            parsedContents,
+            newFileContent,
+            'resolutions',
+            depKey,
+            depKey,
+            upgrade.newName
+          );
+        }
       }
     }
     return newFileContent;
