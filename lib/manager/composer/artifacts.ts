@@ -1,19 +1,15 @@
 import is from '@sindresorhus/is';
 import { quote } from 'shlex';
 import { getGlobalConfig } from '../../config/global';
+import { PlatformId } from '../../constants';
 import {
   SYSTEM_INSUFFICIENT_DISK_SPACE,
   TEMPORARY_ERROR,
 } from '../../constants/error-messages';
-import {
-  PLATFORM_TYPE_GITHUB,
-  PLATFORM_TYPE_GITLAB,
-} from '../../constants/platforms';
 import * as datasourcePackagist from '../../datasource/packagist';
 import { logger } from '../../logger';
 import { ExecOptions, exec } from '../../util/exec';
 import {
-  deleteLocalFile,
   ensureCacheDir,
   ensureLocalDir,
   getSiblingFileName,
@@ -36,7 +32,7 @@ function getAuthJson(): string | null {
   const authJson: AuthJson = {};
 
   const githubCredentials = hostRules.find({
-    hostType: PLATFORM_TYPE_GITHUB,
+    hostType: PlatformId.Github,
     url: 'https://api.github.com/',
   });
   if (githubCredentials?.token) {
@@ -46,7 +42,7 @@ function getAuthJson(): string | null {
   }
 
   hostRules
-    .findAll({ hostType: PLATFORM_TYPE_GITLAB })
+    .findAll({ hostType: PlatformId.Gitlab })
     ?.forEach((gitlabHostRule) => {
       if (gitlabHostRule?.token) {
         const host = gitlabHostRule.resolvedHost || 'gitlab.com';
@@ -105,10 +101,6 @@ export async function updateArtifacts({
       ...config.constraints,
     };
 
-    if (config.isLockFileMaintenance) {
-      await deleteLocalFile(lockFileName);
-    }
-
     const preCommands: string[] = [
       `install-tool composer ${await getComposerConstraint(constraints)}`,
     ];
@@ -129,7 +121,7 @@ export async function updateArtifacts({
     const cmd = 'composer';
     let args: string;
     if (config.isLockFileMaintenance) {
-      args = 'install';
+      args = 'update';
     } else {
       args =
         (
@@ -169,7 +161,7 @@ export async function updateArtifacts({
       return res;
     }
 
-    logger.debug(`Commiting vendor files in ${vendorDir}`);
+    logger.debug(`Committing vendor files in ${vendorDir}`);
     for (const f of [...status.modified, ...status.not_added]) {
       if (f.startsWith(vendorDir)) {
         res.push({

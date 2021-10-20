@@ -3,6 +3,7 @@ import is from '@sindresorhus/is';
 import delay from 'delay';
 import pAll from 'p-all';
 import { lt } from 'semver';
+import { PlatformId } from '../../constants';
 import {
   CONFIG_GIT_URL_UNAVAILABLE,
   PLATFORM_AUTHENTICATION_ERROR,
@@ -15,7 +16,6 @@ import {
   REPOSITORY_NOT_FOUND,
   TEMPORARY_ERROR,
 } from '../../constants/error-messages';
-import { PLATFORM_TYPE_GITLAB } from '../../constants/platforms';
 import { logger } from '../../logger';
 import { BranchStatus, PrState, VulnerabilityAlert } from '../../types';
 import * as git from '../../util/git';
@@ -66,7 +66,7 @@ let config: {
 } = {} as any;
 
 const defaults = {
-  hostType: PLATFORM_TYPE_GITLAB,
+  hostType: PlatformId.Gitlab,
   endpoint: 'https://gitlab.com/api/v4/',
   version: '0.0.0',
 };
@@ -500,7 +500,7 @@ async function tryPrAutomerge(
   pr: number,
   platformOptions: PlatformPrOptions
 ): Promise<void> {
-  if (platformOptions?.gitLabAutomerge) {
+  if (platformOptions?.usePlatformAutomerge) {
     try {
       if (platformOptions?.gitLabIgnoreApprovals) {
         await ignoreApprovals(pr);
@@ -561,7 +561,7 @@ export async function createPr({
         remove_source_branch: true,
         title,
         description,
-        labels: is.array(labels) ? labels.join(',') : null,
+        labels: (labels || []).join(','),
         squash: config.squash,
       },
     }
@@ -875,7 +875,11 @@ export async function ensureIssue({
         await gitlabApi.putJson(
           `projects/${config.repository}/issues/${issue.iid}`,
           {
-            body: { title, description, labels: labels ?? issue.labels },
+            body: {
+              title,
+              description,
+              labels: (labels || issue.labels || []).join(','),
+            },
           }
         );
         return 'updated';
@@ -885,7 +889,7 @@ export async function ensureIssue({
         body: {
           title,
           description,
-          labels: labels || [],
+          labels: (labels || []).join(','),
         },
       });
       logger.info('Issue created');
@@ -1003,7 +1007,9 @@ export async function deleteLabel(
   logger.debug(`Deleting label ${label} from #${issueNo}`);
   try {
     const pr = await getPr(issueNo);
-    const labels = (pr.labels || []).filter((l: string) => l !== label).join();
+    const labels = (pr.labels || [])
+      .filter((l: string) => l !== label)
+      .join(',');
     await gitlabApi.putJson(
       `projects/${config.repository}/merge_requests/${issueNo}`,
       {
