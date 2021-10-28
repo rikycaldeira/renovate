@@ -1,0 +1,162 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`manager/helmfile-values/extract extractPackageFile() parse helmfile with all sections 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "1.0.0",
+      "datasource": "docker",
+      "depName": "container.registry.com/yetanother/repository",
+      "replaceString": "1.0.0",
+      "versioning": "docker",
+    },
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.1.0",
+      "datasource": "docker",
+      "depName": "another/repository",
+      "replaceString": "0.1.0",
+      "versioning": "docker",
+    },
+  ],
+}
+`;
+
+exports[`manager/helmfile-values/extract extractPackageFile() parse inline image 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{depName}}{{#if newValue}}:{{newValue}}{{/if}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.0.1",
+      "datasource": "docker",
+      "depName": "container.registry.com/some/repository",
+      "replaceString": "container.registry.com/some/repository:0.0.1",
+    },
+  ],
+}
+`;
+
+exports[`manager/helmfile-values/extract extractPackageFile() parse inline multi images 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{depName}}{{#if newValue}}:{{newValue}}{{/if}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.0.1",
+      "datasource": "docker",
+      "depName": "container.registry.com/some/repository",
+      "replaceString": "container.registry.com/some/repository:0.0.1",
+    },
+    Object {
+      "autoReplaceStringTemplate": "{{depName}}{{#if newValue}}:{{newValue}}{{/if}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.1.0",
+      "datasource": "docker",
+      "depName": "another/repository",
+      "replaceString": "another/repository:0.1.0",
+    },
+  ],
+}
+`;
+
+exports[`manager/helmfile-values/extract extractPackageFile() parse nested state multi images 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.0.1",
+      "datasource": "docker",
+      "depName": "container.registry.com/some/repository",
+      "replaceString": "0.0.1",
+      "versioning": "docker",
+    },
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.1.0",
+      "datasource": "docker",
+      "depName": "another/repository",
+      "replaceString": "0.1.0",
+      "versioning": "docker",
+    },
+  ],
+}
+`;
+
+exports[`manager/helmfile-values/extract extractPackageFile() parse release image 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.0.1",
+      "datasource": "docker",
+      "depName": "container.registry.com/some/repository",
+      "replaceString": "0.0.1",
+      "versioning": "docker",
+    },
+  ],
+}
+`;
+
+exports[`manager/helmfile-values/extract extractPackageFile() parse release multi images 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.0.1",
+      "datasource": "docker",
+      "depName": "container.registry.com/some/repository",
+      "replaceString": "0.0.1",
+      "versioning": "docker",
+    },
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.1.0",
+      "datasource": "docker",
+      "depName": "another/repository",
+      "replaceString": "0.1.0",
+      "versioning": "docker",
+    },
+  ],
+}
+`;
+
+exports[`manager/helmfile-values/extract extractPackageFile() parses multidoc yaml 1`] = `
+Object {
+  "datasource": "docker",
+  "deps": Array [
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "0.1.0",
+      "datasource": "docker",
+      "depName": "another/repository",
+      "replaceString": "0.1.0",
+      "versioning": "docker",
+    },
+    Object {
+      "autoReplaceStringTemplate": "{{newValue}}{{#if newDigest}}@{{newDigest}}{{/if}}",
+      "currentDigest": undefined,
+      "currentValue": "1.0.0",
+      "datasource": "docker",
+      "depName": "container.registry.com/yetanother/repository",
+      "replaceString": "1.0.0",
+      "versioning": "docker",
+    },
+  ],
+}
+`;
